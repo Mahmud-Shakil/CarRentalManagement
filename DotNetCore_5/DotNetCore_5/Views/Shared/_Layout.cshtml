@@ -1,0 +1,109 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Car Rental Management</title>
+
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <script src="~/jquery/jquery.js"></script>
+
+    <script src="~/jquery-validate/jquery.validate.js"></script>
+    <script src="~/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+
+    <script src="~/CustomJS/JavaScript.js"></script>
+    <script src="~/CustomJS/Image.js"></script>
+    <link href="~/css/imageCss.css" rel="stylesheet" />
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-info border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Tech Cars</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            if (User.IsInRole("Customer"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Customer" asp-action="Index">Customer</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" asp-controller="Report" asp-action="Report">Report</a>
+                                </li>
+                            }
+                            if (User.IsInRole("User"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Vehicel" asp-action="Index">Vehicel</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Booking" asp-action="Index">Booking</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="PaymentType" asp-action="Index">Payment Type</a>
+                                </li>
+                            }
+
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Administrator" asp-action="Index">Administrator</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Customer" asp-action="Index">Customer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Vehicel" asp-action="Index">Vehicel</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Booking" asp-action="Index">Booking</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="PaymentType" asp-action="Index">Payment Type</a>
+                            </li>
+                            <li>
+                                <a class="nav-link" asp-controller="Report" asp-action="Report">Report</a>
+                            </li>
+                        }
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - Tech Cars - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <script src="~/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

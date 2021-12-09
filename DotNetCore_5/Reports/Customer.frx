@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="11/21/2021 04:36:25" ReportInfo.Modified="11/21/2021 08:52:25" ReportInfo.CreatorVersion="2021.4.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqV5n69Z/jZBbOIkct1sJuR9sEhuNUmoekWeV5E8ZbPYnKClMOhltnnQUG/Q00xmEbCOK3/P7TW6NyBu0/r7ccHcsE2f0YXVYTe9ue+KNpC9FU+GT7epkDZ1vIpv84hqVn1ZXK4avUwzOjUVh6ACflyH9YLja5L7/q3Cq1Oh0zPj5c1tofyoS4prHnlpPbJGeHuZH6tjQTfSL8nTdcqyUI5Q==">
+      <TableDataSource Name="Customers" DataType="System.Int32" Enabled="true" TableName="Customers">
+        <Column Name="CustomerId" DataType="System.Int32"/>
+        <Column Name="FirstName" DataType="System.String"/>
+        <Column Name="LastName" DataType="System.String"/>
+        <Column Name="DateOfBirth" DataType="System.DateTime"/>
+        <Column Name="Address" DataType="System.String"/>
+        <Column Name="City" DataType="System.String"/>
+        <Column Name="PostCode" DataType="System.String"/>
+        <Column Name="Email" DataType="System.String"/>
+        <Column Name="PhoneNumber" DataType="System.String"/>
+        <Column Name="ImageName" DataType="System.String"/>
+        <Column Name="ImageFullPath" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="132.3">
+      <PictureObject Name="Picture2" Left="47.25" Top="18.9" Width="207.9" Height="113.4" ImageLocation="D:\Logos\car-logo-template\22.jpg" ImageFormat="Jpeg"/>
+      <TextObject Name="Text9" Left="207.9" Top="28.35" Width="311.85" Height="75.6" Text="Car Rental Management" HorzAlign="Center" VertAlign="Center" Font="Arial, 18pt, style=Bold" TextFill.Color="Brown"/>
+      <TextObject Name="Text10" Left="557.55" Top="37.8" Width="122.85" Height="56.7" Text="Print Time&#13;&#10;[Date]" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt, style=Bold" TextFill.Color="Brown"/>
+    </ReportTitleBand>
+    <DataBand Name="Data1" Top="136.3" Width="718.2" Height="378" DataSource="Customers">
+      <PictureObject Name="Picture1" Left="463.05" Top="113.4" Width="170.1" Height="141.75" DataColumn="Customers.ImageFullPath"/>
+      <TextObject Name="Text1" Width="718.2" Height="56.7" Fill.Color="Aquamarine" Text="[Customers.FirstName] [Customers.LastName]" VertAlign="Center" Font="Arial, 14pt, style=Bold"/>
+      <TextObject Name="Text2" Left="236.25" Top="66.15" Width="189" Height="28.35" Fill.Color="White" Text="[Customers.DateOfBirth]" Format="Date" Format.Format="d" VertAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text3" Left="236.25" Top="122.85" Width="189" Height="28.35" Fill.Color="White" Text="[Customers.Address]" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="236.25" Top="179.55" Width="189" Height="28.35" Fill.Color="White" Text="[Customers.City]" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="236.25" Top="236.25" Width="189" Height="28.35" Fill.Color="White" Text="[Customers.PostCode]" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="236.25" Top="292.95" Width="189" Height="28.35" Fill.Color="White" Text="[Customers.Email]" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="236.25" Top="340.2" Width="189" Height="28.35" Fill.Color="White" Text="[Customers.PhoneNumber]" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="47.25" Top="66.15" Width="170.1" Height="28.35" Text="Date of Birth" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="Text12" Left="47.25" Top="122.85" Width="170.1" Height="28.35" Text="Address&#13;&#10;" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="Text13" Left="47.25" Top="179.55" Width="170.1" Height="28.35" Text="City" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="Text14" Left="47.25" Top="236.25" Width="170.1" Height="28.35" Text="Post Code" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="Text15" Left="47.25" Top="292.95" Width="170.1" Height="28.35" Text="Email" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt"/>
+      <TextObject Name="Text16" Left="47.25" Top="340.2" Width="170.1" Height="28.35" Text="Phone Number" HorzAlign="Center" VertAlign="Center" Font="Arial, 12pt"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="518.3" Width="718.2" Height="37.8">
+      <TextObject Name="Text8" Left="576.45" Top="9.45" Width="94.5" Height="18.9" Fill.Color="White" Text="[PageN]" Font="Arial, 10pt"/>
+    </PageFooterBand>
+  </ReportPage>
+</Report>

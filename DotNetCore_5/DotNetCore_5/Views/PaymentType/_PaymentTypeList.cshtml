@@ -1,0 +1,23 @@
+﻿@model IEnumerable<PaymentTypeViewModel>
+<h2>Payment Type List</h2>
+<div>
+    <table class="table table-bordered table-striped text-center">
+
+        <tr>
+            <th>Id</th>
+            <th>Payment Type</th>
+            <th>Operation</th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PaymentTypeCode</td>
+                <td>@item.PaymentDiscription</td>
+                <td>
+                    <a href="#" class="btn btn-warning" name="btnEditModal" onclick='Update("+@item.PaymentTypeCode+")' data-bs-toggle="modal" data-bs-target="#EditModal">Edit</a>
+                    <a href="#" class="btn  btn-danger" name="btnDeleteModal" onclick='Delete("+@item.PaymentTypeCode+")' data-bs-toggle="modal" data-bs-target="#DeleteModal">Delete</a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>

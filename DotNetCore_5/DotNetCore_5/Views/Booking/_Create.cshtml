@@ -1,0 +1,167 @@
+﻿@model BookingViewModel
+<form enctype="multipart/form-data" asp-action="Create" method="post" class="mt-3">
+    <div class="modal-header">
+        <h5 class="modal-title" id="categoryModalLabel">Add Bookings</h5>
+        <button type="button" class="close btn btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"></span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row" id="0">
+            <div class="col-md-12 mx-auto">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group mb-3">
+                    <label asp-for="FullName" class="form-label"></label>
+
+                    <select asp-for="CustomerId" class="form-control" asp-items="@(new SelectList(string.Empty,"CustomerId", "FullName"))">
+                        <option value="">--Select Customer--</option>
+                    </select>
+
+                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="City" class="form-label"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="PostCode" class="form-label"></label>
+                    <input asp-for="PostCode" class="form-control" />
+                    <span asp-validation-for="PostCode" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="ImageName" class="form-label mb-3"></label>
+                    <img src="~/images/noI.jpg" id="Image" height="120" width="110" class="change_edit mb-3" />
+                    <input asp-for="ImageName" id="ImageName" name="ImageName" class="form-control change_image" type="file" data-tag="_0" onchange="changeImage(this, event)"  />
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="PickUpDate" class="form-label"></label>
+                    <input asp-for="PickUpDate" class="form-control" value="" />
+                    <span asp-validation-for="PickUpDate" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="DropOutDate" class="form-label"></label>
+                    <input asp-for="DropOutDate" class="form-control" value="" />
+                    <span asp-validation-for="DropOutDate" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="TotalDaysOfHiring" class="form-label"></label>
+                    <input asp-for="TotalDaysOfHiring" class="form-control" onchange="calculateDifference()"/>
+                    <button type="button" onclick="calculateDifference();">Calculate Total Days</button>
+                    <span asp-validation-for="TotalDaysOfHiring" class="text-danger"></span>
+                </div>
+                <div class="form-group position-relative mb-3">
+                    <label asp-for="DropPoint" class="form-label"></label>
+                    <input asp-for="DropPoint" class="form-control" />
+                    <span asp-validation-for="DropPoint" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="HirePoint" class="form-label"></label>
+                    <input asp-for="HirePoint" class="form-control" />
+                    <span asp-validation-for="HirePoint" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Model" class="form-label"></label>
+                 
+                        <select asp-for="VehicleID" class="form-control" asp-items="@(new SelectList(string.Empty,"VehicleID", "Model"))">
+                            <option value="">--Select Vehicel Model--</option>
+                        </select>
+               
+                    <span asp-validation-for="VehicleID" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="DailyHireRate" class="form-label"></label>
+                    <input asp-for="DailyHireRate" class="form-control"/>
+                    <span asp-validation-for="DailyHireRate" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="Total" class="form-label"></label>
+                    <input asp-for="Total" class="form-control" />
+                    <button type="button" onclick="calcualte()" >Calculate</button>
+                    <span asp-validation-for="Total" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Save" />
+    </div>
+</form>
+
+<script>
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: "/Booking/GetCustomer/",
+            dataType: "Json",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, value) {
+                    $('#CustomerId').append('<option value="' + value.customerId + '">' + value.fullName + '</option>')
+                });
+            }
+        });
+        $('#CustomerId').change(function () {
+            var CustomerId = $('#CustomerId').val();
+            if (CustomerId > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Booking/GetAllById?CustomerId=" + CustomerId,
+                    dataType: "Json",
+                    success: function (data) {
+                        console.log(data);
+                        $("#Image").attr("src", "../../images/customer_images/" + data.imageName);
+                        $("#City").attr("value", data.city);
+                        $("#PostCode").attr("value", data.postCode);
+                        $("#PhoneNumber").attr("value", data.phoneNumber);
+
+                    }
+
+                })
+               
+            }
+        });
+    });
+
+    $(function () {
+        $.ajax({
+            type: "GET",
+            url: "/Booking/GetVehicel/",
+            dataType: "Json",
+            success: function (data) {
+                console.log(data);
+                $.each(data, function (index, value) {
+                    $('#VehicleID').append('<option value="' + value.vehicleID + '">' + value.model + '</option>')
+                });
+            }
+        });
+        $('#VehicleID').change(function () {
+            var VehicleID = $('#VehicleID').val();
+            if (VehicleID > 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Booking/GetById?VehicleID=" + VehicleID,
+                    dataType: "Json",
+                    success: function (data) {
+                        console.log(data);
+                      
+                        $("#DailyHireRate").attr("value", data.dailyHireRate);
+
+                    }
+
+                })
+              
+            }
+        });
+    });
+
+</script>

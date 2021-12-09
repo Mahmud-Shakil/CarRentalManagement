@@ -1,0 +1,189 @@
+﻿@model IEnumerable<VehicleViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <p>
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#CreateModal">Create New</button>
+    </p>
+    <form asp-action="Index" method="get">
+        <div class="btnSearch">
+            <p>
+                Find by Model: <input type="text" name="SearchString" value="@ViewBag.CurrentFilter" />
+                <input type="submit" value="Search" class="btn btn-info" /> &nbsp;&nbsp;
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to Full List</a>
+            </p>
+        </div>
+    </form>
+</div>
+
+<table class="table table-bordered table-striped list_table">
+    <thead>
+        <tr>
+            <th>
+                SL
+            </th>
+            <th>
+                RegistrationNumber
+            </th>
+            <th>
+                Model
+            </th>
+            <th>
+                @Html.ActionLink("Manufacturer", "Index", new { SortOrder = ViewBag.SortNameParam }, new { @class = "text-decoration-none" })
+            </th>
+
+            <th>
+                DailyHireRate
+            </th>
+            <th>
+                Images
+            </th>
+
+            <th class="text-center tbl_action">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                   @item.SerialNo
+                </td>
+                <td>
+                    @item.RegistrationNumber
+                </td>
+                <td>
+                    @item.Model
+                </td>
+
+                <td>
+                    @item.Manufacturer
+                </td>
+                <td>
+                    @item.DailyHireRate
+                </td>
+
+                <td class="text-center">
+                    <a href="#" class="btn btn-outline-secondary" name="details"
+                       onclick='ShowImage("+@item.VehicleID+")' data-bs-toggle="modal" data-bs-target="#ShowImageModal">Show Image</a>
+                </td>
+                <td>
+
+                    <a asp-controller="Vehicel" asp-action="Edit" asp-route-id="@item.VehicleID" class="btn btn-outline-warning">Edit</a>
+                    <a asp-controller="Vehicel" asp-action="Delete" asp-route-id="@item.VehicleID" class="btn btn-outline-danger"onclick="return confirm('Are you sure to delete?')">Delete</a>
+
+                    <a href="#" class="btn btn-primary" name="details"
+                       onclick='DetailsRecord("+@item.VehicleID+")' data-bs-toggle="modal" data-bs-target="#customerDetails">Details</a>
+
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="itemsDiv">
+</div>
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }),
+new X.PagedList.Web.Common.PagedListRenderOptions
+{
+    ContainerDivClasses = new[] { "navication" },
+    LiElementClasses = new[] { "page-item" },
+    PageClasses = new[] { "page-link" },
+})
+<div class="modal fade" id="CreateModal" tabindex="-1" aria-labelledby="CreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header px-md-5">
+                <h3 class="modal-title" id="detailsModalLabel">Add Vehicel</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-md-5">
+
+                @await Html.PartialAsync("_Create", new VehicleViewModel())
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ShowImageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Images</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="ImageDiv">
+                    @if (ViewBag.ViewImages == "Show")
+                    {
+                        <partial name="~/Views/Vehicel/_ViewImages.cshtml" />
+                      
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="customerDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailsModalLabel">Vehicel Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="DetailspartialDiv">
+                    @if (ViewBag.Details == "Show")
+                    {
+                        <partial name="~/Views/Vehicel/_Details.cshtml" />
+                       
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function DetailsRecord(VehicleID) {
+        $.ajax({
+            url: "/Vehicel/Details?id=" + VehicleID,
+            type: "GET",
+            data: "",
+            contentType: 'application/json;charset=utf-8',
+            success: function (data) {
+                $('#DetailspartialDiv').show();
+                $('#DetailspartialDiv').html(data);
+
+            },
+            error: function () {
+                alert("Error Occured")
+            }
+        });
+    }
+</script>
+<script>
+    function ShowImage(VehicleID) {
+        $.ajax({
+            url: "/Vehicel/ViewImages?id=" + VehicleID,
+            type: "GET",
+            data: "",
+            contentType: 'application/json;charset=utf-8',
+            success: function (data) {
+                $('#ImageDiv').show();
+                $('#ImageDiv').html(data);
+
+            },
+            error: function () {
+                alert("Error Occured")
+            }
+        });
+    }
+</script>
+
+

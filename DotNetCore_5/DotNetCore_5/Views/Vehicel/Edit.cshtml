@@ -1,0 +1,134 @@
+﻿@model VehicleViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form enctype="multipart/form-data" asp-action="Edit" method="post" class="mt-3">
+
+    <div class="col-md-6 mx-auto">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <input type="hidden" asp-for="VehicleID" />
+        <div class="form-group mb-3">
+            <label asp-for="Model" class="form-label"></label>
+            <input asp-for="Model" class="form-control" />
+            <span asp-validation-for="Model" class="text-danger"></span>
+        </div>
+        <div class="form-group position-relative mb-3">
+            <label asp-for="Manufacturer" class="form-label"></label>
+            <input asp-for="Manufacturer" class="form-control" />
+            <span asp-validation-for="Manufacturer" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="RegistrationNumber" class="form-label"></label>
+            <input asp-for="RegistrationNumber" class="form-control" />
+            <span asp-validation-for="RegistrationNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="DailyHireRate" class="form-label"></label>
+            <input asp-for="DailyHireRate" class="form-control" />
+            <span asp-validation-for="DailyHireRate" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="ImageName" class="form-label mb-3"></label>
+            <div class="d-flex flex-wrap justify-content-start">
+                @foreach (var image in ViewBag.Images)
+                {<div class="image_container d-flex justify-content-center position-relative">
+                        <img src="../../images/vehicel_images/@image.ImageName" alt="Image" >
+                        <a class="position-absolute btn_delete_images" asp-controller="Vehicel" asp-action="DeleteImage" asp-route-id="@image.ImageId" onclick="return confirm('Are you sure to delete?')">&times;</a>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <div class="d-flex flex-wrap justify-content-start" id="edit_container">
+            </div>
+            <input type="file" asp-for="Edit_Photos" multiple="" class="d-none" onchange="image_select()">
+            <button class="btn btn-outline-warning" type="button" onclick="document.getElementById('Edit_Photos').click()">Choose Images</button>
+        </div>
+        <div class="form-group mb-3">
+            <input type="submit" value="Update" class="btn btn-success" />
+            <a asp-action="Index" class="btn btn-secondary">Back To List</a>
+        </div>
+    </div>
+</form>
+<script>
+
+    var images = [];
+    // this function will select images
+    function image_select() {
+        var image = document.getElementById('Edit_Photos').files;
+        for (i = 0; i < image.length; i++) {
+            if (check_duplicate(image[i].name)) {
+                images.push({
+                    "name": image[i].name,
+                    "url": URL.createObjectURL(image[i]),
+                    "file": image[i],
+                })
+            } else {
+                alert(image[i].name + " is already added to the list");
+            }
+        }
+
+        /*document.getElementById('form').reset();*/
+        document.getElementById('edit_container').innerHTML = image_show();
+    }
+    // this function will show images in the DOM
+    function image_show() {
+        var image = "";
+        images.forEach((i) => {
+            image += `<div class="image_container d-flex justify-content-center position-relative">
+                   <img src="`+ i.url + `" alt="Image">
+                   <span class="position-absolute" onclick="delete_image(`+ images.indexOf(i) + `)">&times;</span>
+              </div>`;
+        })
+        return image;
+    }
+
+    // this function will get all images from the array
+    function get_image_data() {
+        var form = new FormData()
+        for (let index = 0; index < images.length; index++) {
+            form.append("file[" + index + "]", images[index]['file']);
+        }
+        return form;
+    }
+
+    // this function will delete a specific image from the container
+    function delete_image(index) {
+        var attachments = document.getElementById('Edit_Photos').files;
+        var fileBuffer = new DataTransfer();
+
+        // append the file list to an array iteratively
+        for (let i = 0; i < attachments.length; i++) {
+            // Exclude file in specified index
+            if (index !== i)
+                fileBuffer.items.add(attachments[i]);
+        }
+
+        // Assign buffer to file input
+        document.getElementById("Edit_Photos").files = fileBuffer.files;
+
+        images.splice(index, 1);
+        document.getElementById('edit_container').innerHTML = image_show();
+    }
+
+    // this function will check duplicate images
+    function check_duplicate(name) {
+        var image = true;
+        if (images.length > 0) {
+            for (e = 0; e < images.length; e++) {
+                if (images[e].name == name) {
+                    image = false;
+                    break;
+                }
+            }
+        }
+        return image;
+    }
+    
+</script>
+
+
+
+

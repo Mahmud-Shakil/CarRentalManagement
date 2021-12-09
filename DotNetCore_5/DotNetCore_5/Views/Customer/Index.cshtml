@@ -1,0 +1,302 @@
+﻿@model IEnumerable<CustomerViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <p>
+        <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#CreateModal">Create New</button>
+    </p>
+    <form asp-action="Index" method="get">
+        <div class="btnSearch">
+            <p>
+                Find by name: <input type="text" name="SearchString" value="@ViewBag.CurrentFilter" />
+                <input type="submit" value="Search" class="btn btn-info" /> &nbsp;&nbsp;
+                <a asp-action="Index" class="btn btn-outline-secondary">Back to Full List</a>
+            </p>
+        </div>
+    </form>
+</div>
+
+<table class="table table-bordered table-striped list_table">
+    <thead>
+        <tr>
+            <th>
+                SL
+            </th>
+            <th>
+                First Name
+            </th>
+            <th>
+                Last Name
+            </th>
+            <th>
+                Date of Birth
+            </th>
+
+            <th>
+                Image
+            </th>
+            <th>
+               Address
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+               @Html.ActionLink("City","Index", new { SortOrder = ViewBag.SortNameParam }, new { @class = "text-decoration-none" })
+            </th>
+            <th>
+                Post Code
+            </th>
+            <th>
+                Phone No
+            </th>
+
+            <th class="text-center tbl_action">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                   @item.SerialNo
+                </td>
+                <td>
+                    @item.FirstName
+                </td>
+                <td>
+                    @item.LastName
+                </td>
+
+                <td>
+                    @item.DateOfBirth.ToShortDateString()
+                </td>
+                <td class="text-center">
+                    <img src="~/images/customer_images/@item.ImageName" + item.I" width="70" height="80" asp-append-version="true" />
+                </td>
+                <td>
+                    @item.Address
+                </td>
+                <td>
+
+                    @item.Email
+                </td>
+                <td>
+                    @item.City
+                </td>
+                <td>
+                    @item.PostCode
+                </td>
+                <td>
+                    @item.PhoneNumber
+                </td>
+                <td>
+
+                    <a href="#" class="btn btn-warning" name="details"
+                       onclick='EditRecord("+@item.CustomerId+")' data-bs-toggle="modal" data-bs-target="#EditModal">Edit</a>
+                    <a href="#" class="btn btn-danger" name="details"
+                       onclick='DeleteRecord("+@item.CustomerId+")' data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</a>
+                    <a href="#" class="btn btn-outline-secondary" name="details"
+                       onclick='DetailsRecord("+@item.CustomerId+")' data-bs-toggle="modal" data-bs-target="#detailsModal">Details</a>
+                </td>
+              
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="itemsDiv">
+</div>
+@Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page = page }),
+new X.PagedList.Web.Common.PagedListRenderOptions
+{
+    ContainerDivClasses = new[] { "navication" },
+    LiElementClasses = new[] { "page-item" },
+    PageClasses = new[] { "page-link" },
+})
+<div class="modal fade" id="CreateModal" tabindex="-1" aria-labelledby="CreateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @await Html.PartialAsync("_Create", new CustomerMultipleInsert())
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header px-md-5">
+                <h3 class="modal-title" id="detailsModalLabel">Update Customer</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-md-5">
+                <div id="EditDiv">
+                    @if (ViewBag.Details == "Show")
+                    {
+                        <partial name="~/Views/Customer/_Edit.cshtml" />
+                        ViewBag.Details = "";
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header px-md-5">
+                <h3 class="modal-title" id="detailsModalLabel">Delete Supplier</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-md-5">
+                <div id="DeleteDiv">
+                    @if (ViewBag.Details == "Show")
+                    {
+                        <partial name="~/Views/Customer/_Delete.cshtml" />
+                        ViewBag.Details = "";
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header px-md-5">
+                <h3 class="modal-title" id="detailsModalLabel">Customer Details</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body px-md-5">
+                <div id="DetailsDiv">
+                    @if (ViewBag.Details == "Show")
+                    {
+                        <partial name="~/Views/Customer/_Details.cshtml" />
+                        ViewBag.Details = "";
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+        if (isNaN(@TempData["id"]) == false) {
+            var link = '@Url.Action("Create", "Customer", new { id = @TempData["id"] })';
+            $("#itemsDiv").load(link);
+        }
+        $('#CreateModal').on('shown.bs.modal', function () {
+            $('#Name').trigger('focus');
+        });
+            $('#CreateModal').on('hidden.bs.modal', function (event) {
+            $("input[type=text]").val("");
+            $("input[type=number]").val("");
+            $("input[type=datetime-local]").val("");
+            $('#sl').val('0');
+
+            $("img[data-tag='itemImageinCategory']").each(function () {
+                $(this).attr("src", "/images/no-image.png");
+            });
+            $("div").each(function () {
+                if (parseInt(this.id) > 0) {
+                    this.remove();
+                }
+            })
+        });
+        $('#addModelButton').on('click', function () {
+            var present_sl = parseInt($('#sl').val());
+            var next_sl = parseInt(present_sl) + 1;
+            var next_item = '<div id="' + next_sl + '">' + $('#' + present_sl).html() + '</div>';
+            next_item = next_item.split('_' + present_sl.toString()).join('_' + next_sl.toString());
+            next_item = next_item.split('[' + present_sl.toString() + ']').join('[' + next_sl.toString() + ']');
+            $('#' + present_sl).after(next_item);
+            $('#sl').val(next_sl);
+        });
+            //$('#itemModal').on('hidden.bs.modal', function (event) {
+            //    $("input[type=text]").val("");
+            //    $("input[type=number]").val("");
+            //    $("input[type=datetime-local]").val("");
+            //});
+
+
+        });
+
+
+        function loadItem(e) {
+            var link = '@Url.Action("Create", "Customer", new { id = "-1" })';
+            link = link.replace("-1", e);
+            $("#itemModalContent").load(link);
+        }
+        var loadImage = function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var img = document.getElementById('itemImage');
+                img.src = URL.createObjectURL(event.target.files[0]);
+            }
+        }
+        var editImage = function (event) {
+            if (event.target.files && event.target.files[0]) {
+                var img = document.querySelector('img[alt = "Edit Image"]')
+                img.src = URL.createObjectURL(event.target.files[0]);
+            }
+        }
+        var changeImage = function (obj, event) {
+            if (event.target.files && event.target.files[0]) {
+                console.log(obj.dataset.tag);
+                var img = document.getElementById(obj.dataset.tag);
+                img.src = URL.createObjectURL(event.target.files[0]);
+            }
+
+        }
+        function EditRecord(CustomerId) {
+            $.ajax({
+                url: "/Customer/Edit?id=" + CustomerId,
+                type: "GET",
+                data: "",
+                contentType: 'application/json; charset = utf-8',
+                success: function (data) {
+                    $('#EditDiv').show();
+                    $('#EditDiv').html(data);
+                },
+                error: function () {
+                    alert("Error occured")
+                }
+            })
+        }
+        function DeleteRecord(CustomerId) {
+            $.ajax({
+                url: "/Customer/Delete?id=" + CustomerId,
+                type: "GET",
+                data: "",
+                contentType: 'application/json; charset = utf-8',
+                success: function (data) {
+                    $('#DeleteDiv').show();
+                    $('#DeleteDiv').html(data);
+                },
+                error: function () {
+                    alert("Error occured")
+                }
+            })
+        }
+        function DetailsRecord(CustomerId) {
+            $.ajax({
+                url: "/Customer/Details?id=" + CustomerId,
+                type: "GET",
+                data: "",
+                contentType: 'application/json; charset = utf-8',
+                success: function (data) {
+                    $('#DetailsDiv').show();
+                    $('#DetailsDiv').html(data);
+                },
+                error: function () {
+                    alert("Error occured")
+                }
+            })
+        }
+
+    </script>
+
+}
+
